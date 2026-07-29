@@ -105,53 +105,6 @@ Function z606withoutDollarsax()
 	Application.ActiveWindow.title.endOfBuffer (false)
 End Function
 
-Sub indexationRameau_html_url()
-' Renvoie les suggestions dans une page web, extérieure à WinIBW
-	if Application.ActiveWindow.title is nothing then
-		Application.ActiveWindow.Command "mod", False
-	Else
-		Dim agent
-		agent = Replace(application.activeWindow.Variable("P3GUL")," ","")
-		
-		Dim PPN_aindexer
-		PPN_aindexer = Replace(application.activeWindow.Variable("P3GPP")," ","")
-	     				
-		if ScriptEngine1 is nothing then
-		    	Set ScriptEngine1 = CreateObject("scriptcontrol")
-	    		ScriptEngine1.Language = "JScript"
-	    	end if
-	    		
-		Dim resumee 
-		resumee= application.activeWindow.title.selection
-		resumee= Replace(resumee,"'","\x27")
-		resumee= Replace(resumee,"&","\x26")
-		'MsgBox "resumee:"&resumee
-		Dim titre 
-		titre = Replace(getTagDollar("200","a"),"'","\x27")
-		titre = Replace(titre,"&","\x26")
-		Application.ActiveWindow.title.startOfBuffer (false)
-		Dim sstitre 
-		sstitre = Replace(getTagDollar("200","e"),"'","\x27")
-		sstitre = Replace(sstitre,"&","\x26")
-		Application.ActiveWindow.title.startOfBuffer (false)
-		Dim titrepartie 
-		titrepartie = Replace(getTagDollar("200","i"),"'","\x27")
-		titrepartie = Replace(titrepartie ,"&","\x26")
-		Application.ActiveWindow.title.startOfBuffer (false)
-		Dim titres 
-		titres = titre & ". " & sstitre & " " + titrepartie 
-		titres = Replace(titres,"@","")
-		MsgBox  titres 
-
-		' Construit et lance l'url dans le navifateur par defaut du poste
-		url ="https://hub-rdftotal.idref.fr/subject_indexation/?docId="+PPN_aindexer+"&Title="+encodeURL1(titres)+"&Summary="+encodeURL1(resumee)+"&models=victor3_chain,victor1_concept,victor2&aggregationType=intersection2models,llm&subjectsMaxCount="+resultsCount+"&Agent="+agent+"&vocabulary=rameau&Format=html"
-		
-		Application.ShellExecute url, 5, "open", ""
-	    	
-		
-	End If
-End Sub
-
 Sub indexationRameau_wsh()
 ' Renvoie les suggestions dans WinIBW, sans dépendance à Internet Explorer
 	Dim ScriptEngine3
@@ -207,7 +160,7 @@ Sub indexationRameau_wsh()
 		' new
 		js=js & "subjectsMaxCount = encodeURIComponent('" & resultsCount & "');"
 		js=js & "error_srv= '';"
-		js=js & "url ='https://hub-rdftotal.idref.fr/subject_indexation/?docId='+PPN_aindexer+'&Title='+titre+'&Summary='+abstract+'&models=victor3_chain,victor1_concept,victor2&aggregationType=intersection2models,llm&subjectsMaxCount='+subjectsMaxCount+'&Agent='+agent+'&vocabulary=rameau&Format=text';"
+		js=js & "url ='https://hub-rdftotal.idref.fr/subject_indexation/?docId='+PPN_aindexer+'&Title='+titre+'&Summary='+abstract+'&models=victor3_chain,victor1_concept,victor2&aggregationType=union,cross,qdrant&subjectsMaxCount='+subjectsMaxCount+'&Agent='+agent+'&Format=text';"
 		js=js & " try { "
 		js=js & "xhr.open('GET', url,false); "
 		js=js & "xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded; charset=ISO-8859-1'); "
